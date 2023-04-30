@@ -1,0 +1,154 @@
+import random
+
+class Game2048:
+    def __init__(self, size=4):
+        self.size = size
+        self.grid = [[0]*size for _ in range(size)]
+        self.score = 0
+        self.high_score = self.load_high_score()
+        self.game_over = False
+        self.add_random_tile()
+        self.add_random_tile()
+
+    def load_high_score(self):
+        # Load high score from file or return 0 if file does not exist
+        try:
+            with open('high_score.txt', 'r') as f:
+                return int(f.read().strip())
+        except FileNotFoundError:
+            return 0
+
+    def save_high_score(self):
+        # Save high score to file
+        with open('high_score.txt', 'w') as f:
+            f.write(str(self.high_score))
+
+    def add_random_tile(self):
+        # Add a random tile (2 or 4) to an empty cell
+        empty_cells = [(i, j) for i in range(self.size) for j in range(self.size) if self.grid[i][j] == 0]
+        if empty_cells:
+            i, j = random.choice(empty_cells)
+            self.grid[i][j] = random.choice([2, 4])
+
+    def move_left(self):
+        # Move tiles left and merge adjacent tiles of the same value
+        for i in range(self.size):
+            j = 0
+            while j < self.size-1:
+                while j < self.size-1 and self.grid[i][j] == 0:
+                    j += 1
+                k = j+1
+                while k < self.size and self.grid[i][k] == 0:
+                    k += 1
+                if k < self.size and self.grid[i][j] == self.grid[i][k]:
+                    self.grid[i][j] *= 2
+                    self.score += self.grid[i][j]
+                    self.grid[i][k] = 0
+                    j = k+1
+                else:
+                    j = k
+        self.add_random_tile()
+        if self.is_game_over():
+            self.game_over = True
+            self.save_high_score()
+
+    def move_right(self):
+        # Move tiles right and merge adjacent tiles of the same value
+        for i in range(self.size):
+            j = self.size-1
+            while j > 0:
+                while j > 0 and self.grid[i][j] == 0:
+                    j -= 1
+                k = j-1
+                while k >= 0 and self.grid[i][k] == 0:
+                    k -= 1
+                if k >= 0 and self.grid[i][j] == self.grid[i][k]:
+                    self.grid[i][j] *= 2
+                    self.score += self.grid[i][j]
+                    self.grid[i][k] = 0
+                    j = k-1
+                else:
+                    j = k
+        self.add_random_tile()
+        if self.is_game_over():
+            self.game_over = True
+            self.save_high_score()
+
+    def move_up(self):
+        # Move tiles up and merge adjacent tiles of the same value
+        for j in range(self.size):
+            i = 0
+            while i < self.size-1:
+                while i < self.size-1 and self.grid[i][j] == 0
+
+                    i += 1
+                k = i+1
+                while k < self.size and self.grid[k][j] == 0:
+                    k += 1
+                if k < self.size and self.grid[i][j] == self.grid[k][j]:
+                    self.grid[i][j] *= 2
+                    self.score += self.grid[i][j]
+                    self.grid[k][j] = 0
+                    i = k+1
+                else:
+                    i = k
+        self.add_random_tile()
+        if self.is_game_over():
+            self.game_over = True
+            self.save_high_score()
+
+    def move_down(self):
+        # Move tiles down and merge adjacent tiles of the same value
+        for j in range(self.size):
+            i = self.size-1
+            while i > 0:
+                while i > 0 and self.grid[i][j] == 0:
+                    i -= 1
+                k = i-1
+                while k >= 0 and self.grid[k][j] == 0:
+                    k -= 1
+                if k >= 0 and self.grid[i][j] == self.grid[k][j]:
+                    self.grid[i][j] *= 2
+                    self.score += self.grid[i][j]
+                    self.grid[k][j] = 0
+                    i = k-1
+                else:
+                    i = k
+        self.add_random_tile()
+        if self.is_game_over():
+            self.game_over = True
+            self.save_high_score()
+
+    def is_game_over(self):
+        # Check if the game is over (no more empty cells and no adjacent tiles of the same value)
+        if any(0 in row for row in self.grid):
+            return False
+        for i in range(self.size):
+            for j in range(self.size-1):
+                if self.grid[i][j] == self.grid[i][j+1]:
+                    return False
+        for j in range(self.size):
+            for i in range(self.size-1):
+                if self.grid[i][j] == self.grid[i+1][j]:
+                    return False
+        return True
+
+    def reset(self):
+        # Reset the game (clear grid and score, and add two random tiles)
+        self.grid = [[0]*self.size for _ in range(self.size)]
+        self.score = 0
+        self.game_over = False
+        self.add_random_tile()
+        self.add_random_tile()
+
+    def get_high_score(self):
+        # Return the high score
+        return self.high_score
+
+    def get_score(self):
+        # Return the current score
+        return self.score
+
+    def get_grid(self):
+        # Return the current grid
+        return self.grid
