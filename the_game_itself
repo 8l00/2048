@@ -152,3 +152,48 @@ class Game2048:
     def get_grid(self):
         # Return the current grid
         return self.grid
+        
+    def play_bot(self):
+        self.add_tile()
+        self.add_tile()
+        while not self.game_over:
+            best_move = None
+            best_score = -1
+            for move in ["a", "d", "w", "s"]:
+                game_copy = Game2048(self.size)
+                game_copy.grid = [row[:] for row in self.grid]
+                game_copy.score = self.score
+                if move == "a":
+                    game_copy.move_left()
+                elif move == "d":
+                    game_copy.move_right()
+                elif move == "w":
+                    game_copy.move_up()
+                elif move == "s":
+                    game_copy.move_down()
+                else:
+                    continue
+                if game_copy.is_game_over():
+                    continue
+                score = 0
+                for i in range(self.size):
+                    for j in range(self.size):
+                        score += self.grid[i][j]
+                if score > best_score:
+                    best_score = score
+                    best_move = move
+            move = best_move
+            if move == "a":
+                self.move_left()
+            elif move == "d":
+                self.move_right()
+            elif move == "w":
+                self.move_up()
+            elif move == "s":
+                self.move_down()
+            self.add_tile()
+            if self.is_game_over():
+                print("Game over!")
+                self.game_over = True
+        self.save_high_score()
+        print("Final score: {}".format(self.score))
