@@ -1,0 +1,127 @@
+import tkinter as tk
+from game2048 import Game2048
+
+class Game2048GUI:
+    def __init__(self, master):
+        self.master = master
+        self.master.title("2048")
+        self.game = Game2048()
+        self.tiles = []
+        self.score_var = tk.StringVar(value="Score: 0")
+        self.high_score_var = tk.StringVar(value=f"High Score: {self.game.get_high_score()}")
+        self.init_tiles()
+        self.init_buttons()
+        self.init_labels()
+
+    def init_tiles(self):
+        # Create a grid of tiles (labels) to represent the game grid
+        for i in range(self.game.size):
+            row = []
+            for j in range(self.game.size):
+                tile = tk.Label(self.master, text="", width=4
+        # Create a grid of tiles (labels) to represent the game grid
+        for i in range(self.game.size):
+            row = []
+            for j in range(self.game.size):
+                tile = tk.Label(self.master, text="", width=4,
+                                height=2, font=("Arial", 32), bg="#cdc1b4")
+                tile.grid(row=i+1, column=j+1, padx=5, pady=5)
+                row.append(tile)
+            self.tiles.append(row)
+        self.update_tiles()
+
+    def init_buttons(self):
+        # Create buttons for the game controls
+        tk.Button(self.master, text="Reset", command=self.reset_game).grid(row=0, column=1, pady=10)
+        tk.Button(self.master, text="Quit", command=self.master.quit).grid(row=0, column=2, pady=10)
+        tk.Button(self.master, text="Up", command=self.move_up).grid(row=1, column=0)
+        tk.Button(self.master, text="Left", command=self.move_left).grid(row=2, column=0)
+        tk.Button(self.master, text="Right", command=self.move_right).grid(row=2, column=2)
+        tk.Button(self.master, text="Down", command=self.move_down).grid(row=3, column=0)
+
+    def init_labels(self):
+        # Create labels for the score and high score
+        tk.Label(self.master, textvariable=self.score_var, font=("Arial", 16)).grid(row=4, column=0, pady=10)
+        tk.Label(self.master, textvariable=self.high_score_var, font=("Arial", 16)).grid(row=4, column=2, pady=10)
+
+    def update_tiles(self):
+        # Update the tile labels to match the game grid
+        for i in range(self.game.size):
+            for j in range(self.game.size):
+                value = self.game.get_grid()[i][j]
+                text = str(value) if value > 0 else ""
+                color = "#cdc1b4" if value < 8 else "#f9f6f2"
+                self.tiles[i][j].configure(text=text, bg=color)
+
+    def update_scores(self):
+        # Update the score and high score labels
+        self.score_var.set(f"Score: {self.game.get_score()}")
+        self.high_score_var.set(f"High Score: {self.game.get_high_score()}")
+
+    def reset_game(self):
+        # Reset the game and update the GUI
+        self.game.reset()
+        self.update_tiles()
+        self.update_scores()
+
+    def move_up(self):
+        # Move the tiles up and update the GUI
+        self.game.move_up()
+        self.update_tiles()
+        self.update_scores()
+        if self.game.is_game_over():
+            self.game_over()
+
+    def move_left(self):
+        # Move the tiles left and update the GUI
+        self.game.move_left()
+        self.update_tiles()
+        self.update_scores()
+        if self.game.is_game_over():
+            self.game_over()
+
+    def move_right(self):
+        # Move the tiles right and update the GUI
+        self.game.move_right()
+        self.update_tiles()
+        self.update_scores()
+        if self.game.is_game_over():
+            self.game_over()
+
+    def move_down(self):
+        # Move the tiles down and update the GUI
+        self.game.move_down()
+        self.update_tiles()
+        self.update_scores()
+        if self.game.is_game_over():
+            self.game_over()
+
+    def game_over(self):
+        # Display a message box when the game is over
+        self.game_over = tk.Toplevel(self.master)
+        self
+        self.game_over.title("Game Over")
+        message = f"Game Over!\nYour score: {self.game.get_score()}\n\nDo you want to play again?"
+        tk.Label(self.game_over, text=message, font=("Arial", 16)).pack(padx=20, pady=20)
+        tk.Button(self.game_over, text="Yes", command=self.restart_game).pack(side="left", padx=10, pady=10)
+        tk.Button(self.game_over, text="No", command=self.quit_game).pack(side="right", padx=10, pady=10)
+
+    def restart_game(self):
+        # Restart the game and close the game over message box
+        self.game_over.destroy()
+        self.reset_game()
+
+    def quit_game(self):
+        # Quit the game and close the window
+        self.master.quit()
+
+    def run(self):
+        # Run the game GUI
+        self.master.mainloop()
+
+
+
+
+game = Game2048()
+gui = GameGUI(game)
+gui.run()
