@@ -154,49 +154,33 @@ class Game2048:
         return self.grid
         
     def play_bot(self):
-        self.add_tile()
-        self.add_tile()
+        # Play the game automatically using a simple strategy
         while not self.game_over:
-            best_move = None
-            best_score = -1
-            for move in ["a", "d", "w", "s"]:
-                game_copy = Game2048(self.size)
-                game_copy.grid = [row[:] for row in self.grid]
-                game_copy.score = self.score
-                if move == "a":
-                    game_copy.move_left()
-                elif move == "d":
-                    game_copy.move_right()
-                elif move == "w":
-                    game_copy.move_up()
-                elif move == "s":
-                    game_copy.move_down()
-                else:
-                    continue
-                if game_copy.is_game_over():
-                    continue
-                score = 0
-                for i in range(self.size):
-                    for j in range(self.size):
-                        score += self.grid[i][j]
-                if score > best_score:
-                    best_score = score
-                    best_move = move
-            move = best_move
-            if move == "a":
-                self.move_left()
-            elif move == "d":
-                self.move_right()
-            elif move == "w":
+            # Check if the game has been won
+            if self.is_game_won():
+                print("Congratulations, you won!")
+                break
+            
+            # Check if the move limit has been reached
+            if self.get_move_count() >= self.get_move_limit():
+                print("Sorry, you have reached the move limit.")
+                break
+            
+            # Choose a random direction to move in
+            direction = random.choice(["up", "down", "left", "right"])
+            
+            # Make the move
+            if direction == "up":
                 self.move_up()
-            elif move == "s":
+            elif direction == "down":
                 self.move_down()
-            self.add_tile()
-            if self.is_game_over():
-                print("Game over!")
-                self.game_over = True
-        self.save_high_score()
-        print("Final score: {}".format(self.score))
+            elif direction == "left":
+                self.move_left()
+            elif direction == "right":
+                self.move_right()
+            
+            # Generate a new tile
+            self.generate_tile()
 
     def set_difficulty(self, difficulty):
         # Set the difficulty level of the game
