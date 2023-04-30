@@ -197,3 +197,42 @@ class Game2048:
                 self.game_over = True
         self.save_high_score()
         print("Final score: {}".format(self.score))
+
+    def set_difficulty(self, difficulty):
+        # Set the difficulty level of the game
+        self.difficulty = difficulty
+
+    def get_difficulty(self):
+        # Return the current difficulty level
+        return self.difficulty
+
+    def get_max_tile(self):
+        # Return the highest tile value on the board
+        return max(max(row) for row in self.board)
+
+    def get_win_condition(self):
+        # Return the win condition for the current difficulty level
+        if self.difficulty == 1:
+            return 2048
+        elif self.difficulty == 2:
+            return 4096
+        elif self.difficulty == 3:
+            return 8192
+
+    def is_game_won(self):
+        # Check if the game has been won
+        return self.get_max_tile() >= self.get_win_condition()
+
+    def get_move_count(self):
+        # Return the number of moves made so far
+        return len(self.move_history)
+
+    def get_move_limit(self):
+        # Return the move limit for the current difficulty level
+        if self.difficulty == 1:
+            return 100
+        elif self.difficulty == 2:
+            return 75
+        elif self.difficulty == 3:
+            return 50
+
